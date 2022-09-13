@@ -1,4 +1,6 @@
-package activity4;
+ 
+
+import java.util.Random;
 
 /**
  * A program to carry on conversations with a human user.
@@ -8,11 +10,11 @@ package activity4;
  *</li><li>
  *         Will transform statements as well as react to keywords
  *</li></ul>
+ * This version uses an array to hold the default responses.
  * @author Laurie White
  * @version April 2012
- *
  */
-public class Magpie4
+public class AnneFrank
 {
     /**
      * Get a default greeting     
@@ -20,7 +22,7 @@ public class Magpie4
      */    
     public String getGreeting()
     {
-        return "Hello, let's talk.";
+        return "Hello. My anme is Anne Frank. let's talk.";
     }
     
     /**
@@ -55,9 +57,34 @@ public class Magpie4
         {
             response = transformIWantToStatement(statement);
         }
-
-        else
+        //  Part of student solution
+        else if (findKeyword(statement, "I want", 0) >= 0)
         {
+            response = transformIWantStatement(statement);
+        }
+
+        else if (findKeyword(statement, "What are you famouse for") >= 0)
+        {
+            response = "I was famous for my diary that described to people what it was like to live in my time";
+        }
+        else if (findKeyword(statement, "you married") >= 0)
+        {
+            response = "No I was not married";
+        }
+        else if (findKeyword(statement, "children") >= 0)
+        {
+            response = "I do not havy any children";
+        } 
+        else if (findKeyword(statement, "live") >= 0)
+        {
+            response = "Before i went into hiding i lived at Merwedeplein square in Amsterdam.";
+        } 
+        else if (findKeyword(statement, "dead") >= 0)
+        {
+            response = "Yes I died long ago.";
+        } 
+        else{
+
             // Look for a two word (you <something> me)
             // pattern
             int psn = findKeyword(statement, "you", 0);
@@ -67,13 +94,22 @@ public class Magpie4
             {
                 response = transformYouMeStatement(statement);
             }
-            else if (psn >= 0
-                    && findKeyword(statement, "I want", psn) >= 0)
+            else
             {
-                response = transformYouMeStatement(statement);
-            }
-            else {
-                response = getRandomResponse();
+                //  Part of student solution
+                // Look for a two word (I <something> you)
+                // pattern
+                psn = findKeyword(statement, "i", 0);
+
+                if (psn >= 0
+                        && findKeyword(statement, "you", psn) >= 0)
+                {
+                    response = transformIYouStatement(statement);
+                }
+                else
+                {
+                    response = getRandomResponse();
+                }
             }
         }
         return response;
@@ -101,7 +137,14 @@ public class Magpie4
         return "What would it mean to " + restOfStatement + "?";
     }
 
-    private String transformIWantSomethingStatement(String statement)
+    
+    /**
+     * Take a statement with "I want <something>." and transform it into 
+     * "Would you really be happy if you had <something>?"
+     * @param statement the user statement, assumed to contain "I want"
+     * @return the transformed statement
+     */
+    private String transformIWantStatement(String statement)
     {
         //  Remove the final period, if there is one
         statement = statement.trim();
@@ -113,7 +156,7 @@ public class Magpie4
                     .length() - 1);
         }
         int psn = findKeyword (statement, "I want", 0);
-        String restOfStatement = statement.substring(psn + 9).trim();
+        String restOfStatement = statement.substring(psn + 6).trim();
         return "Would you really be happy if you had " + restOfStatement + "?";
     }
     
@@ -142,6 +185,30 @@ public class Magpie4
         return "What makes you think that I " + restOfStatement + " you?";
     }
     
+    /**
+     * Take a statement with "I <something> you" and transform it into 
+     * "Why do you <something> me?"
+     * @param statement the user statement, assumed to contain "I" followed by "you"
+     * @return the transformed statement
+     */
+    private String transformIYouStatement(String statement)
+    {
+        //  Remove the final period, if there is one
+        statement = statement.trim();
+        String lastChar = statement.substring(statement
+                .length() - 1);
+        if (lastChar.equals("."))
+        {
+            statement = statement.substring(0, statement
+                    .length() - 1);
+        }
+        
+        int psnOfI = findKeyword (statement, "I", 0);
+        int psnOfYou = findKeyword (statement, "you", psnOfI);
+        
+        String restOfStatement = statement.substring(psnOfI + 1, psnOfYou).trim();
+        return "Why do you " + restOfStatement + " me?";
+    }
     
 
     
@@ -209,31 +276,20 @@ public class Magpie4
      * Pick a default response to use if nothing else fits.
      * @return a non-committal string
      */
-    private String getRandomResponse()
+    private String getRandomResponse ()
     {
-        final int NUMBER_OF_RESPONSES = 4;
-        double r = Math.random();
-        int whichResponse = (int)(r * NUMBER_OF_RESPONSES);
-        String response = "";
-        
-        if (whichResponse == 0)
-        {
-            response = "Interesting, tell me more.";
-        }
-        else if (whichResponse == 1)
-        {
-            response = "Hmmm.";
-        }
-        else if (whichResponse == 2)
-        {
-            response = "Do you really think so?";
-        }
-        else if (whichResponse == 3)
-        {
-            response = "You don't say.";
-        }
-
-        return response;
+        Random r = new Random ();
+        return randomResponses [r.nextInt(randomResponses.length)];
     }
-
+    
+    private String [] randomResponses = {"Interesting, tell me more",
+            "Hmmm.",
+            "Do you really think so?",
+            "You don't say.",
+            "Thats very interesting.",
+            "I'm unsure how to feel about that.",
+            "Do you have any family members?",
+            "Okay, what else can you tell me?"
+    };
+    
 }

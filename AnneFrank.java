@@ -63,7 +63,7 @@ public class AnneFrank
             response = transformIWantStatement(statement);
         }
 
-        else if (findKeyword(statement, "What are you famouse for") >= 0)
+        else if (findKeyword(statement, "famous") >= 0)
         {
             response = "I was famous for my diary that described to people what it was like to live in my time";
         }
@@ -73,17 +73,29 @@ public class AnneFrank
         }
         else if (findKeyword(statement, "children") >= 0)
         {
-            response = "I do not havy any children";
+            response = "I do not have any children";
         } 
         else if (findKeyword(statement, "live") >= 0)
         {
-            response = "Before i went into hiding i lived at Merwedeplein square in Amsterdam.";
+            response = "Before I went into hiding I lived at Merwedeplein square in Amsterdam.";
         } 
         else if (findKeyword(statement, "dead") >= 0)
         {
             response = "Yes I died long ago.";
         } 
-        else{
+        else  if (findKeyword(statement, "die") >= 0)
+        {
+            response = "I died in 1945 by Typhus fever.";
+        }
+        else if (findKeyword(statement, "hobbies") >= 0)
+        {
+            response = "I liked to read, write, and research Greek and Roman mythology.";
+        }
+        else if (findKeyword(statement, "alive") >= 0)
+        {
+            response = "No I died long ago.";
+        }
+        else {
 
             // Look for a two word (you <something> me)
             // pattern
